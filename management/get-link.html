@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gán đuôi vào Domain hàng loạt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .input-field input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 24px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .btn-copy-all {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-copy-all:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .link-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .link-item:hover {
+            background: #e8ebff;
+            transform: translateX(5px);
+        }
+
+        .link-number {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .link-text {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            color: #333;
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 90px;
+        }
+
+        .btn-copy:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-copy.copied {
+            background: #28a745;
+        }
+
+        .btn-copy.copied::before {
+            content: '✓ ';
+        }
+
+        .btn-check {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 90px;
+        }
+
+        .btn-check:hover {
+            background: #e0a800;
+        }
+
+        .btn-check.checking {
+            background: #17a2b8;
+            color: white;
+            cursor: wait;
+        }
+
+        .btn-check.checking::before {
+            content: '⟳ ';
+            animation: spin 1s linear infinite;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-checking {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-check-all {
+            background: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-left: 10px;
+        }
+
+        .btn-check-all:hover {
+            background: #f57c00;
+            transform: scale(1.05);
+        }
+
+        .btn-check-all:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #f8f9ff;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn.filter-all.active {
+            background: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .filter-btn.filter-success.active {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .filter-btn.filter-error.active {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .filter-btn.filter-warning.active {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #333;
+        }
+
+        .filter-btn.filter-unchecked.active {
+            background: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .link-item.hidden {
+            display: none;
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Gán đuôi vào Domain hàng loạt</h1>
+        <p class="subtitle">Thêm đường dẫn, tham số hoặc đuôi vào danh sách domain/URL một cách nhanh chóng</p>
+
+        <div id="alert" class="alert"></div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="domainInput">
+                    📝 Danh sách Domain/URL (mỗi dòng 1 domain) *
+                </label>
+                <textarea 
+                    id="domainInput" 
+                    placeholder="example.com&#10;test.com&#10;demo.org&#10;https://website.com"
+                ></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="suffixInput">
+                    ➕ Đuôi cần thêm (mỗi dòng 1 đuôi - để trống nếu chỉ check domain)
+                </label>
+                <textarea 
+                    id="suffixInput" 
+                    placeholder="/api/endpoint&#10;/products&#10;?ref=campaign&#10;/page/about&#10;&#10;(Hoặc để trống nếu chỉ muốn check domain gốc)"
+                ></textarea>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="input-field">
+                <label for="protocolSelect">🌐 Protocol mặc định:</label>
+                <select id="protocolSelect" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                    <option value="https://">https://</option>
+                    <option value="http://">http://</option>
+                    <option value="">Không thêm</option>
+                </select>
+            </div>
+
+            <div class="input-field">
+                <label style="display: flex; align-items: center; cursor: pointer; margin-top: 24px;">
+                    <input type="checkbox" id="removeSlash" checked style="margin-right: 8px;">
+                    Tự động xử lý dấu "/" trùng
+                </label>
+            </div>
+
+            <button class="btn btn-primary" onclick="generateLinks()">
+                🚀 Tạo Links
+            </button>
+
+            <button class="btn btn-secondary" onclick="clearAll()">
+                🗑️ Xóa hết
+            </button>
+        </div>
+
+        <div id="statsSection" style="display: none;">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDomains">0</div>
+                    <div class="stat-label">Domains</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalSuffixes">0</div>
+                    <div class="stat-label">Đuôi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalLinks">0</div>
+                    <div class="stat-label">Tổng Links</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultsContainer" class="results-container">
+            <div class="results-header">
+                <h2>📋 Kết quả</h2>
+                <div>
+                    <button class="btn-check-all" id="checkAllBtn" onclick="checkAllLinks()">
+                        🔍 Check tất cả
+                    </button>
+                    <button class="btn-copy-all" onclick="copyAllLinks()">
+                        📋 Copy tất cả
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="filter-container">
+                <span class="filter-label">🔍 Lọc theo trạng thái:</span>
+                <button class="filter-btn filter-all active" onclick="filterLinks('all')">
+                    Tất cả (<span id="count-all">0</span>)
+                </button>
+                <button class="filter-btn filter-success" onclick="filterLinks('success')">
+                    ✓ Thành công (<span id="count-success">0</span>)
+                </button>
+                <button class="filter-btn filter-error" onclick="filterLinks('error')">
+                    ✗ Lỗi (<span id="count-error">0</span>)
+                </button>
+                <button class="filter-btn filter-warning" onclick="filterLinks('warning')">
+                    ⚠ Cảnh báo (<span id="count-warning">0</span>)
+                </button>
+                <button class="filter-btn filter-unchecked" onclick="filterLinks('unchecked')">
+                    ⭕ Chưa check (<span id="count-unchecked">0</span>)
+                </button>
+            </div>
+            
+            <div class="link-list" id="linkList"></div>
+        </div>
+    </div>
+
+    <script>
+        let generatedLinks = [];
+        let lastCopiedButton = null;
+        let linkStatuses = {};
+        let currentFilter = 'all';
+
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type} show`;
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateFilterCounts() {
+            const total = generatedLinks.length;
+            const success = Object.values(linkStatuses).filter(s => s.status === 'success').length;
+            const error = Object.values(linkStatuses).filter(s => s.status === 'error').length;
+            const warning = Object.values(linkStatuses).filter(s => s.status === 'warning').length;
+            const unchecked = total - success - error - warning;
+
+            document.getElementById('count-all').textContent = total;
+            document.getElementById('count-success').textContent = success;
+            document.getElementById('count-error').textContent = error;
+            document.getElementById('count-warning').textContent = warning;
+            document.getElementById('count-unchecked').textContent = unchecked;
+        }
+
+        function filterLinks(filter) {
+            currentFilter = filter;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter link items
+            generatedLinks.forEach((link, index) => {
+                const linkItem = document.getElementById(`link-item-${index}`);
+                const status = linkStatuses[index];
+
+                if (filter === 'all') {
+                    linkItem.classList.remove('hidden');
+                } else if (filter === 'unchecked') {
+                    if (!status) {
+                        linkItem.classList.remove('hidden');
+                    } else {
+                        linkItem.classList.add('hidden');
+                    }
+                } else {
+                    if (status && status.status === filter) {
+                        linkItem.classList.remove('hidden');
+                    } else {
+                        linkItem.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function generateLinks() {
+            const domainInput = document.getElementById('domainInput').value.trim();
+            const suffixInput = document.getElementById('suffixInput').value.trim();
+            
+            if (!domainInput) {
+                showAlert('Vui lòng nhập danh sách domain! ⚠️', 'error');
+                return;
+            }
+
+            const domains = domainInput.split('\n').filter(d => d.trim());
+            const suffixes = suffixInput ? suffixInput.split('\n').filter(s => s.trim()) : [''];
+            const protocol = document.getElementById('protocolSelect').value;
+            const removeSlash = document.getElementById('removeSlash').checked;
+
+            generatedLinks = [];
+            linkStatuses = {};
+
+            // If no suffixes provided, just process domains
+            if (suffixes.length === 0 || (suffixes.length === 1 && suffixes[0] === '')) {
+                domains.forEach(domain => {
+                    let cleanDomain = domain.trim();
+                    
+                    // Add protocol if domain doesn't have one
+                    if (protocol && !cleanDomain.match(/^https?:\/\//i)) {
+                        cleanDomain = protocol + cleanDomain;
+                    }
+                    
+                    generatedLinks.push(cleanDomain);
+                });
+                
+                displayResults();
+                updateStats(domains.length, 0, generatedLinks.length);
+                showAlert('Đã tạo danh sách domains! (Không có đuôi) 📋', 'success');
+                return;
+            }
+
+            domains.forEach(domain => {
+                let cleanDomain = domain.trim();
+                
+                // Add protocol if domain doesn't have one
+                if (protocol && !cleanDomain.match(/^https?:\/\//i)) {
+                    cleanDomain = protocol + cleanDomain;
+                }
+
+                suffixes.forEach(suffix => {
+                    let cleanSuffix = suffix.trim();
+                    
+                    // If suffix is empty, just add the domain
+                    if (!cleanSuffix) {
+                        generatedLinks.push(cleanDomain);
+                        return;
+                    }
+                    
+                    let finalLink = cleanDomain;
+
+                    if (removeSlash) {
+                        // Remove trailing slash from domain
+                        finalLink = finalLink.replace(/\/+$/, '');
+                        // Remove leading slash from suffix if domain ends without slash
+                        if (cleanSuffix.startsWith('/')) {
+                            finalLink += cleanSuffix;
+                        } else {
+                            finalLink += '/' + cleanSuffix;
+                        }
+                    } else {
+                        finalLink += cleanSuffix;
+                    }
+
+                    generatedLinks.push(finalLink);
+                });
+            });
+
+            displayResults();
+            updateStats(domains.length, suffixes.length, generatedLinks.length);
+        }
+
+        function displayResults() {
+            const linkList = document.getElementById('linkList');
+            linkList.innerHTML = '';
+
+            generatedLinks.forEach((link, index) => {
+                const linkItem = document.createElement('div');
+                linkItem.className = 'link-item';
+                linkItem.id = `link-item-${index}`;
+                
+                linkItem.innerHTML = `
+                    <span class="link-number">${index + 1}.</span>
+                    <span class="link-text" id="link-text-${index}">
+                        ${link}
+                    </span>
+                    <div class="link-actions">
+                        <button class="btn-check" onclick="checkLink(${index}, this)">
+                            Check
+                        </button>
+                        <button class="btn-copy" onclick="copyLink(${index}, this)">
+                            Copy
+                        </button>
+                    </div>
+                `;
+                
+                linkList.appendChild(linkItem);
+            });
+
+            document.getElementById('resultsContainer').classList.add('show');
+            updateFilterCounts();
+            showAlert(`Đã tạo ${generatedLinks.length} links thành công! 🎉`, 'success');
+        }
+
+        async function checkLink(index, button) {
+            const link = generatedLinks[index];
+            const linkText = document.getElementById(`link-text-${index}`);
+            
+            // Remove old status
+            const oldStatus = linkText.querySelector('.status-indicator');
+            if (oldStatus) oldStatus.remove();
+            
+            // Set button to checking state
+            button.classList.add('checking');
+            button.textContent = 'Checking';
+            button.disabled = true;
+            
+            // Add checking status
+            const checkingStatus = document.createElement('span');
+            checkingStatus.className = 'status-indicator status-checking';
+            checkingStatus.innerHTML = '⟳ Đang check...';
+            linkText.insertBefore(checkingStatus, linkText.firstChild);
+            
+            try {
+                // Try multiple methods to check the link
+                let statusCode = null;
+                let isSuccess = false;
+                let errorMessage = '';
+
+                // Method 1: Try with allorigins.win proxy
+                try {
+                    const proxyUrl = 'https://api.allorigins.win/get?url=';
+                    const response = await fetch(proxyUrl + encodeURIComponent(link), {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Check if the proxied request was successful
+                        if (data.status && data.status.http_code) {
+                            statusCode = data.status.http_code;
+                            isSuccess = statusCode >= 200 && statusCode < 400;
+                        } else if (data.contents) {
+                            // If we got content, the site is probably working
+                            statusCode = 200;
+                            isSuccess = true;
+                        }
+                    }
+                } catch (e) {
+                    errorMessage = 'Proxy error';
+                }
+
+                // Method 2: If proxy fails, try direct fetch (will fail due to CORS but we can check network)
+                if (statusCode === null) {
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+                        
+                        const response = await fetch(link, {
+                            method: 'HEAD',
+                            mode: 'no-cors',
+                            cache: 'no-cache',
+                            signal: controller.signal
+                        });
+                        
+                        clearTimeout(timeoutId);
+                        
+                        // With no-cors, we can't read the status, but if it doesn't throw, the server responded
+                        statusCode = 'OK';
+                        isSuccess = true;
+                    } catch (e) {
+                        if (e.name === 'AbortError') {
+                            errorMessage = 'Timeout';
+                        } else {
+                            errorMessage = 'Network error';
+                        }
+                    }
+                }
+
+                // Method 3: Try with corsproxy.io as backup
+                if (statusCode === null) {
+                    try {
+                        const corsProxy = 'https://corsproxy.io/?';
+                        const response = await fetch(corsProxy + encodeURIComponent(link), {
+                            method: 'GET'
+                        });
+                        
+                        statusCode = response.status;
+                        isSuccess = response.ok;
+                    } catch (e) {
+                        errorMessage = 'Connection failed';
+                    }
+                }
+                
+                // Remove checking status
+                checkingStatus.remove();
+                
+                // Create status indicator
+                const statusIndicator = document.createElement('span');
+                statusIndicator.className = 'status-indicator';
+                
+                if (isSuccess) {
+                    statusIndicator.classList.add('status-success');
+                    statusIndicator.innerHTML = `✓ ${statusCode === 'OK' ? 'Online' : statusCode}`;
+                    linkStatuses[index] = { status: 'success', code: statusCode };
+                } else if (statusCode !== null) {
+                    statusIndicator.classList.add('status-error');
+                    statusIndicator.innerHTML = `✗ ${statusCode}`;
+                    linkStatuses[index] = { status: 'error', code: statusCode };
+                } else {
+                    statusIndicator.classList.add('status-warning');
+                    statusIndicator.innerHTML = `⚠ ${errorMessage || 'Không thể kiểm tra'}`;
+                    linkStatuses[index] = { status: 'warning', code: errorMessage };
+                }
+                
+                linkText.insertBefore(statusIndicator, linkText.firstChild);
+                
+            } catch (error) {
+                // Remove checking status
+                checkingStatus.remove();
+                
+                const statusIndicator = document.createElement('span');
+                statusIndicator.className = 'status-indicator status-warning';
+                statusIndicator.innerHTML = `⚠ ${error.message || 'Lỗi không xác định'}`;
+                linkText.insertBefore(statusIndicator, linkText.firstChild);
+                
+                linkStatuses[index] = { status: 'warning', code: error.message };
+            }
+            
+            // Reset button
+            button.classList.remove('checking');
+            button.textContent = 'Recheck';
+            button.disabled = false;
+            
+            // Update filter counts
+            updateFilterCounts();
+            
+            // Reapply current filter
+            if (currentFilter !== 'all') {
+                filterLinks(currentFilter);
+            }
+        }
+
+        async function checkAllLinks() {
+            const checkAllBtn = document.getElementById('checkAllBtn');
+            checkAllBtn.disabled = true;
+            checkAllBtn.textContent = '⟳ Đang check...';
+            
+            showAlert('Bắt đầu kiểm tra tất cả links... ⏳', 'success');
+            
+            // Check links in batches to avoid overwhelming the browser
+            const batchSize = 5;
+            for (let i = 0; i < generatedLinks.length; i += batchSize) {
+                const batch = [];
+                for (let j = i; j < Math.min(i + batchSize, generatedLinks.length); j++) {
+                    const button = document.querySelectorAll('.btn-check')[j];
+                    batch.push(checkLink(j, button));
+                }
+                await Promise.all(batch);
+                
+                // Small delay between batches
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            checkAllBtn.disabled = false;
+            checkAllBtn.textContent = '🔍 Check lại tất cả';
+            
+            // Count statuses
+            const success = Object.values(linkStatuses).filter(s => s.status === 'success').length;
+            const error = Object.values(linkStatuses).filter(s => s.status === 'error').length;
+            const warning = Object.values(linkStatuses).filter(s => s.status === 'warning').length;
+            
+            updateFilterCounts();
+            showAlert(`Hoàn thành! ✓ ${success} | ✗ ${error} | ⚠ ${warning}`, 'success');
+        }
+
+        function updateStats(domains, suffixes, total) {
+            document.getElementById('totalDomains').textContent = domains;
+            document.getElementById('totalSuffixes').textContent = suffixes;
+            document.getElementById('totalLinks').textContent = total;
+            document.getElementById('statsSection').style.display = 'block';
+        }
+
+        function copyLink(index, button) {
+            const link = generatedLinks[index];
+            
+            navigator.clipboard.writeText(link).then(() => {
+                // Reset previous button if exists
+                if (lastCopiedButton && lastCopiedButton !== button) {
+                    lastCopiedButton.classList.remove('copied');
+                    lastCopiedButton.textContent = 'Copy';
+                }
+
+                // Update current button
+                button.classList.add('copied');
+                button.textContent = 'Copied';
+                
+                // Store reference to current button
+                lastCopiedButton = button;
+                
+                showAlert(`Đã copy: ${link}`, 'success');
+            }).catch(err => {
+                showAlert('Lỗi khi copy! ❌', 'error');
+            });
+        }
+
+        function copyAllLinks() {
+            const allLinks = generatedLinks.join('\n');
+            
+            navigator.clipboard.writeText(allLinks).then(() => {
+                showAlert(`Đã copy tất cả ${generatedLinks.length} links! 📋`, 'success');
+            }).catch(err => {
+                showAlert('Lỗi khi copy! ❌', 'error');
+            });
+        }
+
+        function clearAll() {
+            if (generatedLinks.length > 0) {
+                if (!confirm('Bạn có chắc muốn xóa tất cả?')) {
+                    return;
+                }
+            }
+
+            document.getElementById('domainInput').value = '';
+            document.getElementById('suffixInput').value = '';
+            document.getElementById('linkList').innerHTML = '';
+            document.getElementById('resultsContainer').classList.remove('show');
+            document.getElementById('statsSection').style.display = 'none';
+            generatedLinks = [];
+            lastCopiedButton = null;
+            linkStatuses = {};
+            currentFilter = 'all';
+            
+            // Reset filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.filter-all').classList.add('active');
+            
+            showAlert('Đã xóa tất cả! 🗑️', 'success');
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Enter to generate
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                generateLinks();
+            }
+            
+            // Ctrl/Cmd + Shift + C to copy all
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                if (generatedLinks.length > 0) {
+                    copyAllLinks();
+                }
+            }
+        });
+
+        // Auto-save to localStorage
+        document.getElementById('domainInput').addEventListener('input', (e) => {
+            localStorage.setItem('domains', e.target.value);
+        });
+
+        document.getElementById('suffixInput').addEventListener('input', (e) => {
+            localStorage.setItem('suffixes', e.target.value);
+        });
+
+        // Load from localStorage on page load
+        window.addEventListener('load', () => {
+            const savedDomains = localStorage.getItem('domains');
+            const savedSuffixes = localStorage.getItem('suffixes');
+            
+            if (savedDomains) {
+                document.getElementById('domainInput').value = savedDomains;
+            }
+            
+            if (savedSuffixes) {
+                document.getElementById('suffixInput').value = savedSuffixes;
+            }
+        });
+    </script>
+</body>
+</html>

